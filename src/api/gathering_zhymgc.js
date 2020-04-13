@@ -1,23 +1,46 @@
 import request from "@/utils/request"
 
 export default {
-    getList(){
+    getList() {
         return request({
-            url:'gathering',
-            method:'get'
+            url: 'gathering',
+            method: 'get'
         });
     },
-    search(page,size,searchMap) {
+    search(page, size, searchMap) {
         // return request({
         //     url:'gathering/search/'+page+'/'+size+'',
         //     method: 'post',
         //     data: searchMap
         // });
         return request({
-            url:`/gathering/search/${page}/${size}`,
+            url: `/gathering/search/${page}/${size}`,
             method: 'post',
             data: searchMap
         });
-    }
+    },
+    save(pojo) {
+        return request({
+            url: `/gathering`,
+            method: 'post',
+            data: pojo
+        });
+    },
+    findById(id) {
+        return request({
+            url: `/gathering/${id}`,
+            method: 'get'
+        });
+    },
+    update(id, pojo) {
+        if (id == null || id == '') {
+            return this.save(pojo);
+        }
+        return request({
+            url: `/gathering/${id}`,
+            method: 'put',
+            data: pojo
+        });
+    },
 }
 

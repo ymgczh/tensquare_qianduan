@@ -10,7 +10,7 @@
         <el-date-picker v-model="searchMap.starttime_2" type="date" placeholder="选择结束日期"></el-date-picker>
       </el-form-item>
       <el-button @click="fetchData()" type="primary">查询</el-button>
-      <el-button @click="dialogFormVisible=true" type="primary">新增</el-button>
+      <el-button @click="handleEdit('')" type="primary">新增</el-button>
     </el-form>
 
     <el-table :data="list" stripe style="width: 100%">
@@ -19,6 +19,11 @@
       <el-table-column prop="sponsor" label="主办方" width="180"></el-table-column>
       <el-table-column prop="address" label="活动地址" width="180"></el-table-column>
       <el-table-column prop="starttime" label="开始时间" width="180"></el-table-column>
+      <el-table-column fixed="right" label="操作" width="100">
+        <template slot-scope="scope">
+          <el-button @click="handleEdit(scope.row.id)" type="text" size="small">修改</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       @size-change="fetchData"
@@ -66,7 +71,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary">保存</el-button>
+          <el-button type="primary" @click="hanleSave()">保存</el-button>
           <el-button @click="dialogFormVisible=false">关闭</el-button>
         </el-form-item>
       </el-form>
@@ -88,7 +93,8 @@ export default {
       searchMap: {},
       dialogFormVisible: false,
       pojo: {},
-      cityList: []
+      cityList: [],
+      id: ""
     };
   },
   created() {
@@ -105,6 +111,29 @@ export default {
           this.list = response.data.rows;
           this.total = response.data.total;
         });
+    },
+    hanleSave() {
+      gatheringApi.update(this.id, this.pojo).then(response => {
+        alert(response.message);
+        if (response.flag) {
+          this.fetchData();
+        }
+      });
+
+      this.dialogFormVisible = false;
+    },
+    handleEdit(id) {
+      this.id = id;
+      this.dialogFormVisible = true;
+      if (id != "") {
+        gatheringApi.findById(id).then(response => {
+          if (response.flag) {
+            this.pojo = response.data;
+          }
+        });
+      } else {
+        this.pojo = {};
+      }
     }
   }
 };
