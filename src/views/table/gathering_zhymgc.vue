@@ -22,6 +22,7 @@
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
           <el-button @click="handleEdit(scope.row.id)" type="text" size="small">修改</el-button>
+          <el-button @click="handleDelete(scope.row.id)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -114,7 +115,11 @@ export default {
     },
     hanleSave() {
       gatheringApi.update(this.id, this.pojo).then(response => {
-        alert(response.message);
+        this.$message({
+          message: response.message,
+          type: response.flag ? "success" : "error"
+        });
+
         if (response.flag) {
           this.fetchData();
         }
@@ -134,6 +139,16 @@ export default {
       } else {
         this.pojo = {};
       }
+    },
+    handleDelete(id) {
+      gatheringApi.deleteById(id).then(response => {
+        if (response.flag) {
+          this.$message({
+            message: response.message,
+            type: response.flag ? "success" : "error"
+          });
+        }
+      });
     }
   }
 };

@@ -42,5 +42,11 @@ export default {
             data: pojo
         });
     },
+    deleteById(id) {
+        return request({
+            url: `/gathering/${id}`,
+            method: 'delete'
+        });
+    },
 }
 
